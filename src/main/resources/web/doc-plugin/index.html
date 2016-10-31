@@ -1,0 +1,110 @@
+<!doctype html>
+<html ng-app="DocApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Docs</title>
+
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-resource.min.js"></script>
+    <script src="js/lodash.js"></script>
+    <script src="js/docApp.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+      <div class="jumbotron">
+
+
+        <h1> <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Live documentation</h1>
+      </div>
+
+    <div class="container-fluid" ng-controller="DocController as docs">
+        <div class="row">
+            <div class="col-md-2">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <div class="input-group">
+                      <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
+                      <input type="text" class="form-control" id="prefixFilter" placeholder="Search prefix" ng-model="docs.prefixFilter">
+                    </div>
+                  </div>
+                </form>
+                <br>
+                <ul class="list-group">
+                    <li ng-repeat="prefix in docs.prefixes | filter : docs.prefixFilter" ng-click="docs.selectPrefix(prefix)" class="list-group-item"><span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span> {{ prefix }}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <div class="input-group">
+                      <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
+                      <input type="text" class="form-control" id="typeFilter" placeholder="Search type" ng-model="docs.typeFilter">
+                    </div>
+                  </div>
+                </form>
+                <br>
+                <ul class="list-group">
+                    <li ng-repeat="t in docs.selectedTypes() | filter:{type:docs.typeFilter}" ng-click="docs.selectType(t.type)" class="list-group-item"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span> {{ t.type }}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-7">
+                <div ng-if="docs.selectedTypeObj" class="panel panel-default">
+                  <div class="panel-heading">
+                      <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+                      <b>{{ docs.selectedTypeObj.type }}</b>
+                      <br>{{ docs.selectedTypeObj.description }}</div>
+                      <ol class="breadcrumb">
+                        <li ng-repeat="s in docs.selectedTypeObj.superTypes | reverse"><a href="#">{{ s }}</a></li>
+                      </ol>
+                  <div class="panel-body">
+                      <p>
+                      <b>Interfaces:</b>
+                      <span ng-repeat="i in docs.selectedTypeObj.interfaces">{{ i }}, </span>
+                      </p>
+
+                      <h2>Properties</h2>
+                      <form class="form-inline">
+                        <div class="form-group">
+                          <div class="input-group">
+                            <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
+                            <input type="text" class="form-control" id="propertyFilter" placeholder="Search property" ng-model="docs.propertyFilter">
+                          </div>
+                        </div>
+                      </form>
+                      <br>
+                      <div ng-repeat="p in docs.selectedTypeObj.properties | filter:{name:docs.propertyFilter}" class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3 class="panel-title">{{ p.label }} ({{ p.name }})</h3>
+                          <span class="label label-default">{{p.kind}}</span>
+                          <span ng-if="p.required" class="label label-danger">required</span>
+                          <span ng-if="p.password" class="label label-warning">password</span>
+                          <span ng-if="p.transient" class="label label-info">transient</span>
+                          <span ng-if="p.default" class="pull-right">default = {{ p.default }}</span>
+                        </div>
+                        <div class="panel-body">
+                          {{ p.description }}
+                        </div>
+                      </div>
+
+
+
+                  </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+  </body>
+</html>

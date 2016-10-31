@@ -1,0 +1,25 @@
+
+plugins {
+    id "com.xebialabs.xldp" version "1.0.5"
+}
+
+version="5.0.0"
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven'
+
+task xlExtensionJar(type: Jar) {
+
+    from("src/main/resources")
+
+    into("web") {
+        from("src/main/web")
+    }
+}
+
+build.dependsOn(xlExtensionJar)
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.1'
+}
